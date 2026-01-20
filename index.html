@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#ffffff">
+  <title>発注要検討リスト - 使い方ガイド</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <style>
+    :root {
+      /* Color System - 福生ブランド */
+      --bg-primary: #ffffff;
+      --bg-secondary: #f8f9fa;
+      --bg-tertiary: #f1f3f4;
+      --bg-card: #ffffff;
+      
+      --border-subtle: #e5e7eb;
+      --border-medium: #d1d5db;
+      
+      --text-primary: #1f2937;
+      --text-secondary: #4b5563;
+      --text-tertiary: #6b7280;
+      --text-muted: #9ca3af;
+      
+      /* 福生ブランドカラー - 伝統の朱赤 */
+      --brand-red: #c41e3a;
+      --brand-red-light: #dc3545;
+      --brand-red-dark: #a01830;
+      
+      /* Shadows */
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+      --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+      
+      /* Spacing */
+      --space-xs: 4px;
+      --space-sm: 8px;
+      --space-md: 16px;
+      --space-lg: 24px;
+      --space-xl: 32px;
+      --space-2xl: 48px;
+      
+      /* Border Radius */
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      
+      /* Typography */
+      --font-sans: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      
+      /* 列の色 */
+      --col-product: #e8eaf6;
+      --col-stock-total: #bbdefb;
+      --col-stock: #e3f2fd;
+      --col-avg: #c8e6c9;
+      --col-recent: #e8f5e9;
+      --col-last-year-avg: #ffe0b2;
+      --col-last-year: #fff3e0;
+      --col-weeks: #fce4ec;
+      --col-master: #eceff1;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.7;
+    }
+
+    /* Background Pattern */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(196, 30, 58, 0.03), transparent),
+        radial-gradient(ellipse 60% 40% at 100% 100%, rgba(196, 30, 58, 0.02), transparent);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    /* Header */
+    .header {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-sm);
+      padding: var(--space-lg) 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-content {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 var(--space-lg);
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--brand-red), var(--brand-red-light));
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(196, 30, 58, 0.3);
+    }
+
+    .logo-icon svg {
+      width: 22px;
+      height: 22px;
+      color: #ffffff;
+    }
+
+    .header-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    /* Container */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: var(--space-2xl) var(--space-lg);
+    }
+
+    /* Section */
+    .section {
+      margin-bottom: var(--space-2xl);
+    }
+
+    .section-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: var(--space-md);
+      padding-bottom: var(--space-sm);
+      border-bottom: 2px solid var(--brand-red);
+    }
+
+    /* Card */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: var(--space-lg);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: var(--space-md);
+    }
+
+    .card p {
+      color: var(--text-secondary);
+      line-height: 1.8;
+      margin-bottom: var(--space-sm);
+    }
+
+    .card p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* メリットリスト */
+    .benefit-list {
+      display: grid;
+      gap: var(--space-md);
+      margin-top: var(--space-md);
+    }
+
+    .benefit-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-md);
+      padding: var(--space-md);
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+      border-left: 3px solid var(--brand-red);
+    }
+
+    .benefit-icon {
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      color: var(--brand-red);
+    }
+
+    .benefit-content h3 {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: var(--space-xs);
+    }
+
+    .benefit-content p {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    /* 列説明 */
+    .column-list {
+      display: grid;
+      gap: var(--space-sm);
+    }
+
+    .column-item {
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      gap: var(--space-md);
+      align-items: center;
+      padding: var(--space-md);
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+    }
+
+    .column-name {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: var(--radius-sm);
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .column-desc {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* 列の色 */
+    .col-stock-total { background: var(--col-stock-total); }
+    .col-stock { background: var(--col-stock); }
+    .col-avg { background: var(--col-avg); }
+    .col-recent { background: var(--col-recent); }
+    .col-last-year-avg { background: var(--col-last-year-avg); }
+    .col-last-year { background: var(--col-last-year); }
+    .col-weeks { background: var(--col-weeks); }
+    .col-master { background: var(--col-master); }
+
+    /* 重要マーク */
+    .important {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      color: var(--brand-red);
+      font-weight: 600;
+    }
+
+    .important svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* 使い方ステップ */
+    .steps-list {
+      display: grid;
+      gap: var(--space-md);
+    }
+
+    .step-item {
+      display: flex;
+      gap: var(--space-md);
+      padding: var(--space-lg);
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .step-number {
+      flex-shrink: 0;
+      width: 32px;
+      height: 32px;
+      background: var(--brand-red);
+      color: #ffffff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+
+    .step-content {
+      flex: 1;
+    }
+
+    .step-content strong {
+      display: block;
+      color: var(--text-primary);
+      margin-bottom: var(--space-xs);
+    }
+
+    .step-content p {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    /* フッター */
+    .footer {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border-subtle);
+      padding: var(--space-2xl) var(--space-lg);
+      text-align: center;
+    }
+
+    .footer-content {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .footer-message {
+      font-size: 0.9375rem;
+      color: var(--text-secondary);
+      line-height: 1.8;
+      margin-bottom: var(--space-md);
+    }
+
+    .footer-signature {
+      font-size: 0.875rem;
+      color: var(--text-tertiary);
+      font-weight: 500;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 640px) {
+      .container {
+        padding: var(--space-lg);
+      }
+
+      .header-content {
+        padding: 0 var(--space-md);
+      }
+
+      .column-item {
+        grid-template-columns: 1fr;
+        gap: var(--space-sm);
+      }
+
+      .column-name {
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <div class="header-content">
+      <div class="logo-icon">
+        <i data-lucide="package"></i>
+      </div>
+      <h1 class="header-title">発注要検討リスト - 使い方ガイド</h1>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container">
+    <!-- リストの目的と効果 -->
+    <section class="section">
+      <h2 class="section-title">リストの目的と効果</h2>
+      <div class="card">
+        <p><strong>「在庫が少なくなっている商品を早めに把握して、欠品を防ぐ」</strong>ためのリストです。</p>
+        <p>毎週月曜日に物流センターでシートを更新します。</p>
+      </div>
+
+      <div class="benefit-list">
+        <div class="benefit-item">
+          <i data-lucide="smile" class="benefit-icon"></i>
+          <div class="benefit-content">
+            <h3>お客様へのメリット</h3>
+            <p>商品が欠品せず、スムーズにお届けできる</p>
+          </div>
+        </div>
+
+        <div class="benefit-item">
+          <i data-lucide="users" class="benefit-icon"></i>
+          <div class="benefit-content">
+            <h3>受注センターへのメリット</h3>
+            <p>在庫確認の電話対応、先出し手配などの余計な業務が減る</p>
+          </div>
+        </div>
+
+        <div class="benefit-item">
+          <i data-lucide="truck" class="benefit-icon"></i>
+          <div class="benefit-content">
+            <h3>物流センターへのメリット</h3>
+            <p>欠品処理、先出し作業などの追加作業が減る</p>
+          </div>
+        </div>
+
+        <div class="benefit-item">
+          <i data-lucide="building-2" class="benefit-icon"></i>
+          <div class="benefit-content">
+            <h3>会社全体へのメリット</h3>
+            <p>先出し送料の削減、お客様の信頼向上</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 各列の説明 -->
+    <section class="section">
+      <h2 class="section-title">各列の説明</h2>
+
+      <div class="column-list">
+        <!-- 合計在庫 -->
+        <div class="column-item">
+          <div class="column-name col-stock-total">C列：合計在庫</div>
+          <div class="column-desc">全倉庫の在庫合計</div>
+        </div>
+
+        <!-- 倉庫別在庫 -->
+        <div class="column-item">
+          <div class="column-name col-stock">D列：北花田</div>
+          <div class="column-desc">北花田倉庫の在庫数（このリストは北花田在庫1〜4個の商品のみ表示）</div>
+        </div>
+
+        <div class="column-item">
+          <div class="column-name col-stock">E列：上野芝</div>
+          <div class="column-desc">上野芝の在庫数（移動できる場合あり）</div>
+        </div>
+
+        <div class="column-item">
+          <div class="column-name col-stock">F列：不動堂</div>
+          <div class="column-desc">不動堂の在庫数（移動できる場合あり）</div>
+        </div>
+
+        <!-- 販売実績 -->
+        <div class="column-item">
+          <div class="column-name col-avg">G列：12ヶ月平均</div>
+          <div class="column-desc">過去1年間の月平均販売数（12ヶ月平均なのでこの販売数が基準となります）</div>
+        </div>
+
+        <div class="column-item">
+          <div class="column-name col-avg">H列：3ヶ月平均</div>
+          <div class="column-desc">直近3ヶ月の月平均販売数（最近の傾向を把握できます）</div>
+        </div>
+
+        <div class="column-item">
+          <div class="column-name col-recent">I〜K列：直近実績</div>
+          <div class="column-desc">3ヶ月前、2ヶ月前、先月の販売数</div>
+        </div>
+
+        <div class="column-item">
+          <div class="column-name col-last-year-avg">L列：前年同期平均</div>
+          <div class="column-desc">昨年同月から3ヶ月間の平均販売数（今後の販売予測）</div>
+        </div>
+
+        <div class="column-item">
+          <div class="column-name col-last-year">M〜O列：昨年実績</div>
+          <div class="column-desc">昨年同月、翌月、翌々月の販売数</div>
+        </div>
+
+        <!-- 在庫週数（最重要） -->
+        <div class="column-item">
+          <div class="column-name col-weeks">
+            <span class="important">
+              <i data-lucide="alert-circle"></i>
+              P列：在庫週数
+            </span>
+          </div>
+          <div class="column-desc">
+            <strong>今の在庫であと何週間もつか</strong>を表します。<br>
+            🔴 2週未満：すぐ発注 / 🟡 2〜4週：早めに発注 / 🟢 4週以上：余裕あり
+          </div>
+        </div>
+
+        <!-- 商品分類・仕入先 -->
+        <div class="column-item">
+          <div class="column-name col-weeks">Q列：商品分類</div>
+          <div class="column-desc">商品のジャンル（フィルタで担当者別に絞り込み可能）</div>
+        </div>
+
+        <div class="column-item">
+          <div class="column-name col-weeks">R列：仕入先</div>
+          <div class="column-desc">仕入先名（フィルタで仕入先別に絞り込み可能）</div>
+        </div>
+
+        <!-- マスタ情報 -->
+        <div class="column-item">
+          <div class="column-name col-master">S列：出荷倉庫</div>
+          <div class="column-desc">主な出荷倉庫</div>
+        </div>
+
+        <div class="column-item">
+          <div class="column-name col-master">T列：棚番</div>
+          <div class="column-desc">倉庫内の棚番号</div>
+        </div>
+
+        <!-- 発注情報 -->
+        <div class="column-item">
+          <div class="column-name col-master">U列：発注日</div>
+          <div class="column-desc">発注した日付（カレンダーで入力）<br>入力すると行全体が自動でグレーアウト</div>
+        </div>
+
+        <div class="column-item">
+          <div class="column-name col-master">V列：発注担当</div>
+          <div class="column-desc">発注した担当者名</div>
+        </div>
+
+        <div class="column-item">
+          <div class="column-name col-master">W列：備考</div>
+          <div class="column-desc">特記事項があれば記入</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 使い方 -->
+    <section class="section">
+      <h2 class="section-title">使い方</h2>
+      
+      <div class="steps-list">
+        <div class="step-item">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <strong>北花田在庫を基準に確認</strong>
+            <p>北花田在庫が少ない商品をチェックします。上野芝に在庫があれば移動をお願いします。</p>
+          </div>
+        </div>
+
+        <div class="step-item">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <strong>12ヶ月平均を基準に直近3ヶ月平均を確認</strong>
+            <p>12ヶ月平均より伸びているかなど、直近の販売傾向を把握します。</p>
+          </div>
+        </div>
+
+        <div class="step-item">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <strong>前年同期平均と実績を確認</strong>
+            <p>今後3ヶ月でどのぐらい売れそうかを確認します。</p>
+          </div>
+        </div>
+
+        <div class="step-item">
+          <div class="step-number">4</div>
+          <div class="step-content">
+            <strong>在庫週数を確認して発注判断</strong>
+            <p>在庫週数が2週未満なら即発注、2〜4週なら早めの発注を検討してください。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 効率的な使い方のポイント -->
+    <section class="section">
+      <h2 class="section-title">効率的な使い方のポイント</h2>
+      <div class="card">
+        <p><strong>1. フィルタ機能を活用</strong></p>
+        <p>Q列（商品分類）やR列（仕入先）でフィルタをかけると、担当商品だけを素早く絞り込めます。</p>
+      </div>
+      <div class="card">
+        <p><strong>2. 在庫週数の少ない商品から優先</strong></p>
+        <p>リストは在庫週数が少ない順に並んでいるので、上から順にチェックすると効率的です。</p>
+      </div>
+      <div class="card">
+        <p><strong>3. 発注したら必ず記録</strong></p>
+        <p>U列（発注日）とV列（発注担当）に入力すると、自動でグレーアウトして発注済みが一目瞭然になります。</p>
+      </div>
+    </section>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-content">
+      <div class="footer-message">
+        まずは運用しながら改善していきたいと思います。<br>
+        不明点・要望などあればお気軽にご連絡ください。<br>
+        よろしくお願いいたします！
+      </div>
+      <div class="footer-signature">
+        物流センター　西田
+      </div>
+    </div>
+  </div>
+
+  <!-- Initialize Lucide Icons -->
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>
