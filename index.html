@@ -148,6 +148,36 @@
       letter-spacing: -0.02em;
     }
 
+    .header-actions {
+      margin-left: auto;
+    }
+
+    .repo-link {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+      padding: var(--space-sm) var(--space-md);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .repo-link:hover {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      border-color: var(--brand-red);
+    }
+
+    .repo-link svg {
+      width: 18px;
+      height: 18px;
+    }
+
     /* Container */
     .container {
       max-width: 900px;
@@ -386,6 +416,12 @@
         <i data-lucide="package"></i>
       </div>
       <h1 class="header-title">発注要検討リスト - 使い方ガイド</h1>
+      <div class="header-actions">
+        <a href="https://github.com/arqrise/order-guide" target="_blank" rel="noopener noreferrer" class="repo-link">
+          <i data-lucide="github"></i>
+          <span>GitHub</span>
+        </a>
+      </div>
     </div>
   </div>
 
@@ -594,6 +630,17 @@
       <div class="card">
         <p><strong>3. 発注したら必ず記録</strong></p>
         <p>U列（発注日）とV列（発注担当）に入力すると、自動でグレーアウトして発注済みが一目瞭然になります。</p>
+      </div>
+    </section>
+
+    <!-- 更新情報 -->
+    <section class="section">
+      <h2 class="section-title">更新情報</h2>
+      <div class="card">
+        <p><strong>2026/01/24</strong></p>
+        <p>・北花田在庫4以下→3以下に変更<br>
+        ・発注済みを発注明細より取得して除外<br>
+        ・生産終了商品を除外</p>
       </div>
     </section>
   </div>
